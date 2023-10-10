@@ -21,22 +21,23 @@ void setup() {
   pinMode(PIN_TRIG, OUTPUT);  // sonar TRIGGER
   pinMode(PIN_ECHO, INPUT);   // sonar ECHO
   digitalWrite(PIN_TRIG, LOW);  // turn-off Sonar 
-  
+  float distance;
   // initialize serial port
   Serial.begin(57600);
 }
 
 void loop() {
+  float distance;
   if (millis() < (last_sampling_time + INTERVAL))
     return;
 
   distance = USS_measure(PIN_TRIG, PIN_ECHO); // read distance
 
   if (100 <= distance && distance <= 200) {
-    analogWrite(PIN_LED,(200-distance)*51/20);
+    analogWrite(PIN_LED,(200-distance)*50 / 20);
   }
   else if (200 <= distance && distance <= 300) {
-    analogWrite(PIN_LED, (distance-200)*51/20);
+    analogWrite(PIN_LED, (distance-200)*50 / 20);
   }
   else {
     analogWrite(PIN_LED, 255);

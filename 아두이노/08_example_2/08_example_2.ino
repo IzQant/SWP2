@@ -27,29 +27,20 @@ void setup() {
 }
 
 void loop() {
-  float distance;
   if (millis() < (last_sampling_time + INTERVAL))
     return;
 
   distance = USS_measure(PIN_TRIG, PIN_ECHO); // read distance
 
-  int ledBrightness = 0;
-
-  if (distance <= 100 || distance >= 300) {
-    ledBrightness = 255;
-    analogWrite(PIN_LED, ledBrightness); // Minimum brightness
-  } else if (distance <= 200) {
-    ledBrightness = 0; // Maximum brightness
-    analogWrite(PIN_LED, ledBrightness);
-  } else if (distance <= 150 || distance >= 250) {
-    ledBrightness = 128;
-    analogWrite(PIN_LED, ledBrightness); // 50% brightness
-  } else {
-    // Linearly interpolate brightness between 100mm and 200mm
-    ledBrightness = map(distance, 100, 300, 0, 255);
-    analogWrite(PIN_LED, ledBrightness);
+  if (100 <= distance && distance <= 200) {
+    analogWrite(PIN_LED,(200-distance)*51/20);
   }
-
+  else if (200 <= distance && distance <= 300) {
+    analogWrite(PIN_LED, (distance-200)*51/20);
+  }
+  else {
+    analogWrite(PIN_LED, 255);
+  }
   // output the distance to the serial port
   Serial.print("Min:");        Serial.print(_DIST_MIN);
   Serial.print(",distance:");  Serial.print(distance);

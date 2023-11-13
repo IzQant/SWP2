@@ -13,7 +13,7 @@
 #define _DIST_MIN  100.0   // minimum distance 100mm
 #define _DIST_MAX  250.0   // maximum distance 250mm
 
-#define EMA_ALPHA  0.7     // for EMA Filter
+#define EMA_ALPHA  0.07    // for EMA Filter
 
 #define LOOP_INTERVAL 20   // Loop Interval (unit: msec)
 
@@ -23,6 +23,7 @@ unsigned long last_loop_time;   // unit: msec
 float dist_prev = _DIST_MIN;
 float dist_ema = _DIST_MIN;
 
+bool event_dist, event_servo, event_serial;
 
 void setup()
 {
@@ -46,9 +47,9 @@ void loop()
   last_loop_time += LOOP_INTERVAL;
 
   a_value = analogRead(PIN_IR);
-  dist_raw = ((6762.0 / (a_value - 9.0) - 4.0) * 10.0 - 60.0;
+  dist_raw = (6762.0 / (a_value - 9.0) - 4.0) * 10.0 - 60.0;
 
-  if ((dis_raw == 0.0) || (dist_raw < _DIST_MIN)) {
+  if ((dist_raw == 0.0) || (dist_raw < _DIST_MIN)) {
     dist_raw = dist_prev;
     digitalWrite(PIN_LED, 1);
     myservo.writeMicroseconds(_DUTY_MIN);
@@ -59,10 +60,10 @@ void loop()
   } else {
     dist_prev = dist_raw;
     digitalWrite(PIN_LED, 0);
-    myservo.wrtieMicroseconds(duty);
+    //myservo.writeMicroseconds(duty);
   }
 
-  dist_ema = ((_EMA_ALPHA) * dist_raw) + ((1 - _EMA_ALPHA) * dist_ema);
+  dist_ema = ((EMA_ALPHA) * dist_raw) + ((1 - EMA_ALPHA) * dist_ema);
       
   //duty = map(dist_ema, _DIST_MIN, _DIST_MAX, _DUTY_MIN, _DUTY_MAX);
   duty = ((((dist_ema - _DIST_MIN) / (_DIST_MAX - _DIST_MIN)) * (_DUTY_MAX - _DUTY_MIN)) + _DUTY_MIN);

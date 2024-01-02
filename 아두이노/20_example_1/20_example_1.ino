@@ -15,8 +15,9 @@ void loop()
   Serial.read();
   
   // Take a median value from multiple measurements
-  filtered = ir_sensor_filtered(5, 0.5, 0); // Replace n with your desired value
+  filtered = ir_sensor_filtered(10, 0.5, 0); // Replace n with your desired value
   Serial.print("FLT:"); Serial.println(filtered);
+
   //while (1) ;
 }
 
